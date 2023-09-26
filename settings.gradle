@@ -1,0 +1,2 @@
+rootProject.name = "Mytestcicd"
+include ':app'

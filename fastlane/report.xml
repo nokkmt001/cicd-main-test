@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000331">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: bundleRelease" time="1.737472">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: Switch to android upload_drive lane" time="0.000464">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: upload_to_google_drive" time="10.89873">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: echo Link to apk :https://drive.google.com/file/d/1FdE1f0_hacWQwPTp22OvzAAAnCOQUCXy/view?usp=drivesdk" time="0.01412">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

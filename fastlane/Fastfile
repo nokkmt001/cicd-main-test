@@ -1,0 +1,125 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Build application"
+    lane :build do
+      gradle(
+      task: "assemble",
+      build_type: "Debug",
+      print_command: false
+      )
+      APK_LOCATION = "#{lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]}"
+      copy_artifacts(
+      artifacts: [lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]],
+      target_path: './target/debug/'
+      )
+    end
+
+  desc "Build application"
+    lane :build_release do
+      gradle(
+    task: "bundle",
+    build_type: "Release",
+    print_command: false,
+    properties: {
+      "android.injected.signing.store.file" => "keyBTP.jks",
+      "android.injected.signing.store.password" => "nokkmt00113",
+      "android.injected.signing.key.alias" => "keyBTP",
+      "android.injected.signing.key.password" => "nokkmt00113",
+       }
+       )
+       APK_LOCATION = "#{lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]}"
+       #sh("mv #{APK_LOCATION} ~./target1/")
+       copy_artifacts(
+         artifacts: [lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]],
+         target_path: './target/release/'
+       )
+    end
+
+  desc "Runs all the tests"
+    lane :tests do
+      gradle(task: "test")
+    end
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    gradle(task: "clean assembleDebug")
+    crashlytics
+  
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
+  end
+
+  desc "Upload file to google drive"
+    private_lane :upload_drive do |options|
+      file_path = lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]
+ #     create_google_drive_folder(
+ #      drive_keyfile: "fastlane/test-ci-cd-google_drive.json",
+ #      folder_id: ENV['GOOGLE_DRIVE_FOLDER_ID'],
+ #      folder_title: 'new_folder'
+ #     )
+      upload_to_google_drive(
+        drive_keyfile: "fastlane/test-ci-cd-google_drive.json",
+        service_account: true,
+        folder_id: ENV['GOOGLE_DRIVE_FOLDER_ID'],
+        upload_files: [''+file_path+'']
+      )
+    end
+
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta_release do
+     gradle(
+        task: "bundle",
+        build_type: "Release",
+        print_command: false,
+        properties: {
+          "android.injected.signing.store.file" => "keyBTP.jks",
+          "android.injected.signing.store.password" => "nokkmt00113",
+          "android.injected.signing.key.alias" => "keyBTP",
+          "android.injected.signing.key.password" => "nokkmt00113",
+           }
+           )
+    upload_drive()
+
+    #used to get the url of the uploaded file
+    file_upload_path=lane_context[SharedValues::GDRIVE_UPLOADED_FILE_URLS][0]
+    sh "echo Link to apk :" + file_upload_path
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
+  end
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+    lane :beta_debug do
+      gradle(task: "clean assembleDebug")
+      upload_drive()
+
+      #used to get the url of the uploaded file
+      file_upload_path=lane_context[SharedValues::GDRIVE_UPLOADED_FILE_URLS][0]
+      sh "echo Link to apk :" + file_upload_path
+      # sh "your_script.sh"
+      # You can also use other beta testing services here
+    end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+
+end
