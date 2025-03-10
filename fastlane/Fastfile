@@ -53,7 +53,8 @@ platform :android do
 
   desc "Runs all the tests"
     lane :tests do
-      gradle(task: "test")
+      gradle(task: "test",
+      print_command: true)
     end
 
   desc "Submit a new Beta Build to Crashlytics Beta"
@@ -81,23 +82,42 @@ platform :android do
       )
     end
 
-  desc "Submit a release app"
-  lane :upload_release do
-     gradle(
-        task: "assemble",
-        build_type: "Release",
-        print_command: false,
-        properties: {
-          "android.injected.signing.store.file" => "keyBTP.jks",
-          "android.injected.signing.store.password" => "nokkmt00113",
-          "android.injected.signing.key.alias" => "keyBTP",
-          "android.injected.signing.key.password" => "nokkmt00113",
-           })
-    upload_drive()
+  desc "Upload file to google drive"
+    private_lane :upload_drive_release do |options|
+      file_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+ #     create_google_drive_folder(
+ #      drive_keyfile: "fastlane/test-ci-cd-google_drive.json",
+ #      folder_id: ENV['GOOGLE_DRIVE_FOLDER_ID'],
+ #      folder_title: 'new_folder'
+ #     )
+      upload_to_google_drive(
+        drive_keyfile: "fastlane/test-ci-cd-google_drive.json",
+        service_account: true,
+        folder_id: ENV['GOOGLE_DRIVE_FOLDER_ID'],
+        upload_files: [''+file_path+'']
+      )
+    end
 
-    #used to get the url of the uploaded file
-    file_upload_path=lane_context[SharedValues::GDRIVE_UPLOADED_FILE_URLS][0]
-    sh "echo Link to apk :" + file_upload_path
+  desc "Submit a release app"
+  lane :build_release_upload do
+       gradle(
+         task: "assemble",
+         build_type: "Release",
+         print_command: true,
+         properties: {
+           "android.injected.signing.store.file" => "keyBTP.jks",
+           "android.injected.signing.store.password" => "nokkmt00113",
+           "android.injected.signing.key.alias" => "keyBTP",
+           "android.injected.signing.key.password" => "nokkmt00113"
+         }
+       )
+
+       # Gọi lane upload_drive đã định nghĩa để upload file lên Google Drive
+       upload_drive_release()
+
+       # Lấy URL file được upload và in ra log
+       file_upload_path = lane_context[SharedValues::GDRIVE_UPLOADED_FILE_URLS][0]
+       sh "echo Link to APK: #{file_upload_path}"
   end
 
 
