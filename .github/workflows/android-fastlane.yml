@@ -51,5 +51,5 @@ jobs:
             bundle config path vendor/bundle
             bundle install --jobs 4 --retry 3
 
-      - name: Build Debug APK
-        run: bundle exec fastlane beta_release
+      - name: Build Release APK
+        run: bundle exec fastlane upload_release

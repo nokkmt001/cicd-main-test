@@ -81,6 +81,25 @@ platform :android do
       )
     end
 
+  desc "Submit a release app"
+  lane :upload_release do
+     gradle(
+        task: "assemble",
+        build_type: "Release",
+        print_command: false,
+        properties: {
+          "android.injected.signing.store.file" => "keyBTP.jks",
+          "android.injected.signing.store.password" => "nokkmt00113",
+          "android.injected.signing.key.alias" => "keyBTP",
+          "android.injected.signing.key.password" => "nokkmt00113",
+           })
+    upload_drive()
+
+    #used to get the url of the uploaded file
+    file_upload_path=lane_context[SharedValues::GDRIVE_UPLOADED_FILE_URLS][0]
+    sh "echo Link to apk :" + file_upload_path
+  end
+
 
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta_release do
