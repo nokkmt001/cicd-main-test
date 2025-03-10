@@ -22,12 +22,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Bundler and Fastlane
-        run: |
-            gem install bundler --user-install
-            bundle config set --local path 'vendor/bundle'
-            bundle install --jobs 4 --retry 3
-
       - name: Grant execute permission to Gradle
         run: chmod +x ./gradlew
 
