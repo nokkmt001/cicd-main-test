@@ -4,17 +4,20 @@ buildscript {
     ext {
         play_services_version = "15.0.1"
         support_version = "27.1.1"
-        kotlin_version = '1.6.10'
+        kotlin_version = '1.9.0'
     }
 
     repositories {
         gradlePluginPortal()
         google()
         mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com/' }
     }
     dependencies {
         // .. more existing dependencies here
-        classpath "com.android.tools.build:gradle:7.1.1"
+        classpath "com.android.tools.build:gradle:8.6.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         classpath 'com.google.gms:google-services:4.3.14'
@@ -33,7 +36,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com/' }
     }
 }
 
