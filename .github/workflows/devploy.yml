@@ -1,0 +1,21 @@
+name: GitHub Action Docker
+
+on:
+  push:
+    branches: [ main_docker-android ]
+  pull_request:
+    branches: [ main_docker-android ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04 # Works also with self hosted runner supporting docker
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exec fastlane
+        uses: fabernovel/docker-android
+        with:
+          docker-android-tag: api-35-gcloud-ndk-v1.9.0
+          exec: |
+            bundle install;
+            bundle exec fastlane build_release
