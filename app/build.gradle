@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace 'com.phat.mytestcicd'
-    compileSdk 32
+    compileSdk 35
 
     signingConfigs {
         pilot {
@@ -15,12 +15,19 @@ android {
             storeFile file('./keyBTP')
             storePassword 'nokkmt00113'
         }
+
+        release {
+            keyAlias 'keyBTP'
+            keyPassword 'nokkmt00113'
+            storeFile file('keyBTP.jks')
+            storePassword 'nokkmt00113'
+        }
     }
 
     defaultConfig {
         applicationId "com.phat.mytestcicd"
         minSdk 21
-        targetSdk 32
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
@@ -46,6 +53,7 @@ android {
             }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
