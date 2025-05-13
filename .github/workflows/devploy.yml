@@ -2,9 +2,9 @@ name: GitHub Action Docker
 
 on:
   push:
-    branches: [ main_docker-android ]
+    branches: [ main-docker-android ]
   pull_request:
-    branches: [ main_docker-android ]
+    branches: [ main-docker-android ]
 
 jobs:
   build:
