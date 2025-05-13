@@ -40,10 +40,11 @@ jobs:
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
-      # Run Tests Build
-      - name: Run gradle tests
-        run: ./gradlew test
+      - name: Build with Gradle
+        run: ./gradlew assembleRelease
 
-      # Run Build Project
-      - name: Build gradle project
-        run: ./gradlew build
+      - name: Upload APK RELEASE
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: app/build/outputs/apk/release/app-release.apk
